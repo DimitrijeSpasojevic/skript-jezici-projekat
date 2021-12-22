@@ -1,5 +1,29 @@
 {
   "dependencies": {
-    "express": "^4.17.2"
-  }
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.2",
+    "jsonwebtoken": "^8.5.1",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.9.0",
+    "sequelize-cli": "^6.3.0"
+  },
+  "name": "skript-jezici-projekat",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DimitrijeSpasojevic/skript-jezici-projekat.git"
+  },
+  "author": "Dimitrije Spasojevic",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DimitrijeSpasojevic/skript-jezici-projekat/issues"
+  },
+  "homepage": "https://github.com/DimitrijeSpasojevic/skript-jezici-projekat#readme",
+  "description": ""
 }
