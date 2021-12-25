@@ -20,11 +20,6 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      username: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
-      },
       email: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -35,8 +30,7 @@ module.exports = {
         allowNull: false
       },
       quantity_of_money: {
-        allowNull:false,
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
