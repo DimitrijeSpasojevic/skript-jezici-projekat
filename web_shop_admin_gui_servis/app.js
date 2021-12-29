@@ -7,7 +7,6 @@ require('dotenv').config();
 const app = express();
 app.use(express.json());
 
-
 function getCookies(req) {
     if (req.headers.cookie == null) return {};
 
@@ -23,9 +22,11 @@ function getCookies(req) {
 };
 
 function authToken(req, res, next) {
+    
     const cookies = getCookies(req);
     const token = cookies['token'];
-  
+    
+    console.log(token);
     if (token == null) return res.redirect(301, '/login');
   
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
@@ -33,51 +34,37 @@ function authToken(req, res, next) {
         if (err) return res.redirect(301, '/login');
     
         req.user = user;
-    
+        console.log(user);
         next();
     });
 }
 
 
-app.get('/', authToken, (req, res) => {
-    res.sendFile('index.html', { root: './static' });
-});
-
-app.get('/register', (req, res) => {
+/*app.get('/register', (req, res) => {
     res.sendFile('register.html', { root: './static' });
 });
-
-/*
-const Joi = require('joi');
-
-app.post('/login', (req, res) => {
-    console.log(req.body);
-    // res.send('Posted: ' + req.body.email + ', ' + req.body.password);
-
-    // Definisemo kako unos treba da izgleda
-    const sema = Joi.object().keys({
-        email: Joi.string().trim().email().required(),
-        password: Joi.string().min(4).max(12).required()
-    });
-
-    Joi.validate(req.body, sema, (err, result) => {
-        if (err)
-            res.send(err.details[0].message);
-        else {
-            res.send(result);
-        }
-    });
-});*/
-
-
 
 app.get('/login', (req, res) => {
     res.sendFile('login.html', { root: './static' });
 });
 
+app.get('/category',authToken, (req, res) => {
+    res.sendFile('category.html', { root: './static' });
+});
 
+app.get('/order',authToken, (req, res) => {
+    res.sendFile('order.html', { root: './static' });
+});
 
-app.use('/admin', express.static(path.join(__dirname, 'static'),{index:false,extensions:['html']}));
+app.get('/product',authToken, (req, res) => {
+    res.sendFile('product.html', { root: './static' });
+});
+
+app.get('/user',authToken, (req, res) => {
+    res.sendFile('user.html', { root: './static' });
+});
+*/
+app.use(express.static(path.join(__dirname, 'static')));
 
 app.listen({ port: 8000 }, async () => {
     await sequelize.authenticate();

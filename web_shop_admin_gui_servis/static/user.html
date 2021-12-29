@@ -11,8 +11,8 @@
     <title>Hello, world!</title>
   </head>
   <body onload="init()">
-
-    <h3 class="mt-1 m-4">Pregled svih zaposlenih</h1>
+    <h3 class="mt-1 m-2">Pregled svih zaposlenih</h1>
+    <button class="btn btn-dark btn-lg m-2" id="btnShow">Prikazi sve</button>
     <hr>
 
     <table class="table">
@@ -28,7 +28,7 @@
       </thead>
       <tbody>
         <tr>
-          <th scope="row" id="1">1</th>
+          <td id="1">1</th>
           <td>Pera</td>
           <td>Peric</td>
           <td>0</td>
@@ -79,7 +79,7 @@
       <hr>
       <div class="col-md-6">
         <label class="form-label">Email korisnika za brisanje</label>
-        <input type="text" class="form-control" required>
+        <input type="text" class="form-control" id="del" required>
         <button class="btn btn-dark btn-sm mt-2" id="btnDelete">delete</button>
       </div>
     </form>

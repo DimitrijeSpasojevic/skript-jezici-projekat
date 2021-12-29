@@ -43,30 +43,30 @@
 
     <form class="row g-3 needs-validation mx-5 my-5" novalidate>
       <div class="col-md-4">
-        <label for="validationCustom01" class="form-label" id="name">Naziv proizvoda</label>
-        <input type="text" class="form-control" id="validationCustom01" required>
+        <label for="validationCustom01" class="form-label" >Naziv proizvoda</label>
+        <input type="text" class="form-control" id="name" required>
         <div class="valid-feedback">
           Looks good!
         </div>
       </div>
       <div class="col-md-4">
-        <label for="validationCustom02" class="form-label" id="price">Cena</label>
-        <input type="number" class="form-control" id="validationCustom02" required>
+        <label for="validationCustom02" class="form-label" >Cena</label>
+        <input type="number" class="form-control" id="price" required>
         <div class="valid-feedback">
           Looks good!
         </div>
       </div>
     
       <div class="col-md-6">
-        <label for="validationCustom03" class="form-label" id="description">Opis proizvoda</label>
-        <input type="text" class="form-control" id="validationCustom03" required>
+        <label for="validationCustom03" class="form-label" >Opis proizvoda</label>
+        <input type="text" class="form-control" id="description" required>
         <div class="invalid-feedback">
           Please provide a valid city.
         </div>
       </div>
       <div class="col-md-3">
-        <label for="validationCustom04" class="form-label" id="category">Kategorija</label>
-        <select class="form-select" id="validationCustom04" required>
+        <label for="validationCustom04" class="form-label" >Kategorija</label>
+        <select class="form-select" id="category" required>
           <option selected disabled value="">Choose...</option>
           <option>...</option>
         </select>
@@ -74,18 +74,18 @@
 
       <div class="col-md-6">
         <label for="validationCustom03" class="form-label">Ocena</label>
-        <input type="text" class="form-control" id="validationCustom03" required>
+        <input type="text" class="form-control" id="rate" required>
       </div>
    
       <div class="col-12">
-        <button class="btn btn-primary" type="submit" id="btn">Dodaj nov proizvod</button>
-        <button class="btn btn-primary" type="submit" id="btn">Update</button>
+        <button class="btn btn-primary" type="submit" id="btnCreate">Dodaj nov proizvod</button>
+        <button class="btn btn-primary" type="submit" id="btnUpdate">Update</button>
       </div>
 
       <hr>
       <div class="col-md-6">
         <label class="form-label">ID produkta za brisanje</label>
-        <input type="text" class="form-control" required>
+        <input type="text" class="form-control" id="del" required>
         <button class="btn btn-dark btn-sm mt-2" id="btnDelete">delete</button>
       </div>
     </form>

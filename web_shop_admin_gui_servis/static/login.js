@@ -10,7 +10,10 @@ function init() {
 
         fetch('http://localhost:9000/login', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify(data)
         })
             .then( res => res.json() )
@@ -19,7 +22,8 @@ function init() {
                     alert(el.msg);
                 } else {
                     document.cookie = `token=${el.token};SameSite=Lax`;
+                    window.location.href = 'index.html';
                 }
-            });
+            }).catch(err => console.log(err));
     });
 }

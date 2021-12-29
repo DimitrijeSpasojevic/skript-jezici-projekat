@@ -13,7 +13,7 @@ const cors = require('cors');
 const app = express();
 
 var corsOptions = {
-    origin: 'http://localhost:8000',
+    origin: 'http://localhost:8000', // za app gui 8000
     optionsSuccessStatus: 200
 }
 
@@ -53,6 +53,30 @@ function authToken(req, res, next) {
         next();
     });
 }
+
+app.post('/register', (req, res) => {
+
+    const obj = {
+        first_name: req.body.name,
+        last_name: req.body.name,
+        email: req.body.email,
+        role : req.body.role,
+        quantity_of_money: 0,
+        password: bcrypt.hashSync(req.body.password, 10)
+    };
+
+    if(req.user.role){
+        Users.create(obj).then( row => {
+
+            res.json({row});
+
+        }).catch( err => {res.status(500).json(err);
+                         console.log(err)});
+    }else{
+        res.status(401).json(err);
+    }
+});
+
 
 app.listen({ port: 8080 }, async () => {
     await sequelize.authenticate();

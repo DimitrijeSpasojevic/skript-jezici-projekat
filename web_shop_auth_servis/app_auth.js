@@ -4,10 +4,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 require('dotenv').config();
+const Joi = require('joi');
 
 const app = express();
-
-
 
 var corsOptions = {
     origin: 'http://localhost:8000',
@@ -18,34 +17,23 @@ app.use(express.json());
 app.use(cors(corsOptions));
 
 
-app.post('/register', (req, res) => {
-
-    const obj = {
-        first_name: req.body.name,
-        last_name: req.body.name,
-        email: req.body.email,
-        role : req.body.role,
-        quantity_of_money: 0,
-        password: bcrypt.hashSync(req.body.password, 10)
-    };
-
-    Users.create(obj).then( row => {
-        
-        const usr = {
-            userId: row.id,
-            role: row.role
-        };
-       
-        const token = jwt.sign(usr, process.env.ACCESS_TOKEN_SECRET);
-        
-        res.json({ token: token });
-
-    }).catch( err => {res.status(500).json(err) 
-                     console.log(err)});
-});
 
 app.post('/login', (req, res) => {
+ 
+    const sema = Joi.object().keys({
+        name: Joi.string().require(),
+        email: Joi.string().trim().email().required(),
+        password: Joi.string().min(4).max(12).required()
+    });
     
+    Joi.validate(req.body, sema, (err, result) => {
+        if (err)
+            res.send(err.details[0].message);
+        else {
+            res.send(result);
+        }
+    });
+
     Users.findOne({ where: { email: req.body.email} })
         .then( row => {
             if (bcrypt.compareSync(req.body.password, row.password)) {
