@@ -17,14 +17,16 @@ function init() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(data)
         })
             .then( res => res.json() )
             .then( usr => {
-                window.alert(`Usesno kreiran user ${usr.name}`);
-                window.location.href = 'user.html';
+                console.log(usr);
+                window.alert(`Uspesno kreiran user ${usr.first_name}`);
+                window.location.href = 'login.html';
+            }).catch(error => { 
+                console.log(error)
             });
     });
 }

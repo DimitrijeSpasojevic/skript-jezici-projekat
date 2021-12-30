@@ -12,7 +12,6 @@ function init() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(data)
         })
@@ -21,9 +20,10 @@ function init() {
                 if (el.msg) {
                     alert(el.msg);
                 } else {
+                    console.log(`Ovo je token ${el.token}`)
                     document.cookie = `token=${el.token};SameSite=Lax`;
                     window.location.href = 'index.html';
                 }
-            }).catch(err => console.log(err));
+            }).catch("ne moze da procita jsno");
     });
 }

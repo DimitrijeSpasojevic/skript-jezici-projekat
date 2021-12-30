@@ -7,10 +7,12 @@ const route = express.Router();
 route.use(express.json());
 route.use(express.urlencoded({ extended: true }));
 
+
 function authToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
+    const authHeader = req.headers['Authorization'];
+    console.log(`ovo je authHeader${authHeader}`);
     const token = authHeader && authHeader.split(' ')[1];
-  
+    console.log(`ovo je Token${token}`);
     if (token == null) return res.status(401).json({ msg: err });
   
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
@@ -33,18 +35,18 @@ route.get('/users', (req, res) => {
 
 route.post('/users', (req, res) => {
 
-    const sema = Joi.object().keys({
-        firstName: Joi.string().require(),
-        lastName: Joi.string().required(),
-        email: Joi.string().trim().email().required(),
-        quantityOfMoney: Joi.number().require(),
-        password: Joi.string().min(4).max(12).required()
-    });
+    // const sema = Joi.object().keys({
+    //     firstName: Joi.string().require(),
+    //     lastName: Joi.string().required(),
+    //     email: Joi.string().trim().email().required(),
+    //     quantityOfMoney: Joi.number().require(),
+    //     password: Joi.string().min(4).max(12).required()
+    // });
     
-    Joi.validate(req.body, sema, (err, result) => {
-        if (err)
-            res.send(err.details[0].message);
-    });
+    // Joi.validate(req.body, sema, (err, result) => {
+    //     if (err)
+    //         res.send(err.details[0].message);
+    // });
 
     const obj = {
         first_name: req.body.firstName,
@@ -61,18 +63,18 @@ route.post('/users', (req, res) => {
 
 route.put('/users', (req, res) => {
 
-    const sema = Joi.object().keys({
-        firstName: Joi.string().require(),
-        lastName: Joi.string().required(),
-        email: Joi.string().trim().email().required(),
-        quantityOfMoney: Joi.number().require(),
-        password: Joi.string().min(4).max(12).required()
-    });
+    // const sema = Joi.object().keys({
+    //     firstName: Joi.string().require(),
+    //     lastName: Joi.string().required(),
+    //     email: Joi.string().trim().email().required(),
+    //     quantityOfMoney: Joi.number().require(),
+    //     password: Joi.string().min(4).max(12).required()
+    // });
     
-    Joi.validate(req.body, sema, (err, result) => {
-        if (err)
-            res.send(err.details[0].message);
-    });
+    // Joi.validate(req.body, sema, (err, result) => {
+    //     if (err)
+    //         res.send(err.details[0].message);
+    // });
 
     Users.findOne({ where : { email: req.user.email} })
     .then( usr => {
@@ -99,14 +101,14 @@ route.put('/users', (req, res) => {
 
 route.delete('/users', (req, res) => {
 
-    const sema = Joi.object().keys({
-        email: Joi.string().trim().email().required()
-    });
+    // const sema = Joi.object().keys({
+    //     email: Joi.string().trim().email().required()
+    // });
     
-    Joi.validate(req.body, sema, (err, result) => {
-        if (err)
-            res.send(err.details[0].message);
-    });
+    // Joi.validate(req.body, sema, (err, result) => {
+    //     if (err)
+    //         res.send(err.details[0].message);
+    // });
 
     Users.findOne({ where : { email: req.user.email} })
     .then( usr => {

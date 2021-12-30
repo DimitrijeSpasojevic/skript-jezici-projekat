@@ -3,9 +3,16 @@ const { sequelize } = require('../models');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-
+const cors = require('cors');
 const app = express();
 app.use(express.json());
+
+var corsOptions = {
+    origin: false, // za app_rest
+    optionsSuccessStatus: 200
+}
+
+app.use(cors(corsOptions));
 
 function getCookies(req) {
     if (req.headers.cookie == null) return {};

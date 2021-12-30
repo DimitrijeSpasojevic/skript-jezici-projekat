@@ -9,7 +9,7 @@ const Joi = require('joi');
 const app = express();
 
 var corsOptions = {
-    origin: 'http://localhost:8000',
+    origin: 'http://localhost:8000', // za app gui 8000
     optionsSuccessStatus: 200
 }
 
@@ -21,38 +21,38 @@ app.use(cors(corsOptions));
 app.post('/login', (req, res) => {
  
     const sema = Joi.object().keys({
-        name: Joi.string().require(),
+        name: Joi.string().required(),
         email: Joi.string().trim().email().required(),
         password: Joi.string().min(4).max(12).required()
     });
     
     Joi.validate(req.body, sema, (err, result) => {
-        if (err)
+        if (err){
             res.send(err.details[0].message);
+        }
         else {
-            res.send(result);
+            Users.findOne({ where: { email: req.body.email} })
+            .then( row => {
+                if (bcrypt.compareSync(req.body.password, row.password)) {
+                    const usr = {
+                        userId: row.id,
+                        role: row.role
+                    };
+            
+                    const token = jwt.sign(usr, process.env.ACCESS_TOKEN_SECRET); 
+                    
+                    res.json({ token: token });
+                } else {
+                    res.status(400).json({ msg: "Invalid credentials"});
+                }
+            })
+            .catch( err => {    
+                res.status(400).json({ msg: "User ne postoji"});
+            } );
         }
     });
 
-    Users.findOne({ where: { email: req.body.email} })
-        .then( row => {
-            if (bcrypt.compareSync(req.body.password, row.password)) {
-                const usr = {
-                    userId: row.id,
-                    role: row.role
-                };
-        
-                const token = jwt.sign(usr, process.env.ACCESS_TOKEN_SECRET); 
-                
-                res.json({ token: token });
-            } else {
-                res.status(400).json({ msg: "Invalid credentials"});
-            }
-        })
-        .catch( err => {    
-            //res.status(500).json(err)
-            res.status(400).json({ msg: "User ne postoji"});
-        } );
+
 });
 
 app.listen({ port: 9000 }, async () => {
