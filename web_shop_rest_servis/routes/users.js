@@ -6,7 +6,15 @@ const Joi = require('joi');
 const route = express.Router();
 route.use(express.json());
 route.use(express.urlencoded({ extended: true }));
+const cors = require('cors');
 
+var corsOptions = {
+    origin: false, // za app gui 8000
+    optionsSuccessStatus: 200
+}
+
+
+route.use(cors(corsOptions));
 
 function authToken(req, res, next) {
     const authHeader = req.headers['Authorization'];

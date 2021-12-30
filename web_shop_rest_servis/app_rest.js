@@ -14,7 +14,7 @@ const cors = require('cors');
 const app = express();
 
 var corsOptions = {
-    origin: 'http://localhost:8000', // za app gui 8000
+    origin: false, // za app gui 8000
     optionsSuccessStatus: 200
 }
 
@@ -73,7 +73,7 @@ app.post('/register', (req, res) => {
 
 });
 
-app.use(authToken);
+//app.use(authToken);
 
 app.use('/admin', products);
 app.use('/admin', users);
