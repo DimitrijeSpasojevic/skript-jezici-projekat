@@ -73,7 +73,7 @@ app.post('/register', (req, res) => {
 
 });
 
-// app.use(authToken);
+app.use(authToken);
 
 app.use('/admin', products);
 app.use('/admin', users);
