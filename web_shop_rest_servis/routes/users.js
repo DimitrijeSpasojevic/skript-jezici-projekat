@@ -9,7 +9,7 @@ route.use(express.urlencoded({ extended: true }));
 const cors = require('cors');
 
 var corsOptions = {
-    origin: false, // za app gui 8000
+    origin: "http://localhost:8000",// za app gui 8000
     optionsSuccessStatus: 200
 }
 
@@ -33,7 +33,7 @@ function authToken(req, res, next) {
     });
 }
 
-route.use(authToken);
+//route.use(authToken);
 
 route.get('/users', (req, res) => {
     Users.findAll()

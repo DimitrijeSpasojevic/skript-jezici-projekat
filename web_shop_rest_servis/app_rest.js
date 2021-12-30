@@ -14,7 +14,7 @@ const cors = require('cors');
 const app = express();
 
 var corsOptions = {
-    origin: false, // za app gui 8000
+    origin: "http://localhost:8000", // za app gui 8000
     optionsSuccessStatus: 200
 }
 
