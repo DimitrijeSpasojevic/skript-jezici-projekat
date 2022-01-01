@@ -28,7 +28,7 @@ app.post('/login', (req, res) => {
     
     Joi.validate(req.body, sema, (err, result) => {
         if (err){
-            res.send(err.details[0].message);
+            res.send({msg : err.details[0].message});
         }
         else {
             Users.findOne({ where: { email: req.body.email} })

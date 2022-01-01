@@ -20,10 +20,10 @@ function init() {
                 if (el.msg) {
                     alert(el.msg);
                 } else {
-                    console.log(`Ovo je token ${el.token}`)
+                    //console.log(`Ovo je token ${el.token}`)
                     document.cookie = `token=${el.token};SameSite=Lax`;
                     window.location.href = 'index.html';
                 }
-            }).catch("ne moze da procita jsno");
+            }).catch("ne moze da procita json");
     });
 }

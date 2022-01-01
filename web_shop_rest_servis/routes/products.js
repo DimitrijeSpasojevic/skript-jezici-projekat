@@ -3,34 +3,18 @@ const { sequelize, Products,Users } = require('/skript jezici projekat/models');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const Joi = require('joi');
-const route = express.Router();
-route.use(express.json());
-route.use(express.urlencoded({ extended: true }));
-route.use(authToken);
-
-function authToken(req, res, next) {
-    const authHeader = req.headers['Authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-  
-    if (token == null) return res.status(401).json({ msg: "preazan token" });
-  
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if (err) return res.status(403).json({ msg: err });
-    
-        req.user = user;
-        next();
-    });
-}
+const routep = express.Router();
+routep.use(express.json());
+routep.use(express.urlencoded({ extended: true }));
 
 
-route.get('/products', (req, res) => {
+routep.get('/products', (req, res) => {
     Products.findAll()
         .then( rows => res.json(rows) )
         .catch( err => res.status(500).json(err) );
 });
 
-
-route.post('/products', (req, res) => {
+routep.post('/products', (req, res) => {
 
     const sema = Joi.object().keys({
         name: Joi.string().require(),
@@ -68,8 +52,7 @@ route.post('/products', (req, res) => {
     
 });
 
-
-route.put('/products', (req, res) => {
+routep.put('/products', (req, res) => {
 
     const sema = Joi.object().keys({
         name: Joi.string().require(),
@@ -102,7 +85,7 @@ route.put('/products', (req, res) => {
     
 });
 
-route.delete('/products', (req, res) => {
+routep.delete('/products', (req, res) => {
 
     const sema = Joi.object().keys({
         id: Joi.number().require()
@@ -122,4 +105,4 @@ route.delete('/products', (req, res) => {
  
 });
 
-module.exports = route;
+module.exports = routep;

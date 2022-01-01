@@ -8,11 +8,15 @@ const app = express();
 app.use(express.json());
 
 var corsOptions = {
-    origin: false, // za app_rest
+    origin: "http://localhost:80", // za app gui 8000
     optionsSuccessStatus: 200
 }
 
 app.use(cors(corsOptions));
+
+app.get('/login.html', (req, res) => {
+    res.sendFile('login.html', { root: './static' });
+});
 
 function getCookies(req) {
     if (req.headers.cookie == null) return {};
@@ -29,31 +33,26 @@ function getCookies(req) {
 };
 
 function authToken(req, res, next) {
-    
     const cookies = getCookies(req);
     const token = cookies['token'];
-    
-    console.log(token);
-    if (token == null) return res.redirect(301, '/login');
+  
+    if (token == null) return res.send({msg : "token je null kaze app_gui"});
   
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
     
-        if (err) return res.redirect(301, '/login');
+        if (err)  return res.send({msg : "token nije dobar ali nije null, kaze app_gui"});
     
         req.user = user;
-        console.log(user);
+    
         next();
     });
 }
-
 
 /*app.get('/register', (req, res) => {
     res.sendFile('register.html', { root: './static' });
 });
 
-app.get('/login', (req, res) => {
-    res.sendFile('login.html', { root: './static' });
-});
+
 
 app.get('/category',authToken, (req, res) => {
     res.sendFile('category.html', { root: './static' });

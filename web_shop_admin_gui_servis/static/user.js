@@ -1,31 +1,32 @@
-function init() {
 
-    const cookies = document.cookie.split('=');
-    const token = cookies[cookies.length - 1];
+const cookies = document.cookie.split('=');
+const token = cookies[cookies.length - 1];
+function init() {
     console.log(token);
     document.getElementById('btnShow').addEventListener('click', e =>{
         e.preventDefault();
 
-        fetch('http://localhost:8080/admin/users', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-        })
+             fetch('http://localhost:8080/admin/users', {
+                 headers: {
+                     'Authorization': `Bearer ${token}`
+                 },
+             })
             .then( res => res.json() )
             .then( rows => {
                 const tbodyEl = document.querySelector('tbody');
+                tbodyEl.innerHTML = '';
                 rows.forEach(element => {
                     tbodyEl.innerHTML += `
                     <tr>
                         <td id="${element.id}">${element.id}</th>
-                        <td>${element.firstName}</td>
-                        <td>${element.lastName}</td>
+                        <td>${element.first_name}</td>
+                        <td>${element.last_name}</td>
                         <td>${element.role}</td>
                         <td>${element.email}</td>
-                        <td>${element.quantityOfMoney}</td>
+                        <td>${element.quantity_of_money}</td>
                     </tr>`;
                 });
-            });
+            }).catch(console.log("Greska sa ipsisom tabele"));
     })
 
     document.getElementById('btnCreate').addEventListener('click', e => {
@@ -48,20 +49,11 @@ function init() {
             },
             body: JSON.stringify(data)
         })
-            .then( res => res.json() )
-            .then( el => {
-                const tbodyEl = document.querySelector('tbody');
-                tbodyEl.innerHTML += `
-                    <tr>
-                        <th scope="row" id="${el.id}">${el.id}</th>
-                        <td>${data.firstName}</td>
-                        <td>${data.lastName}</td>
-                        <td>${data.role}</td>
-                        <td>${data.email}</td>
-                        <td>${data.quantityOfMoney}</td>
-                    </tr>
-                `;
-            });
+        .then( res => res.json() )
+        .then( el => {
+            window.alert(`Kreiran korisnik ${el.first_name}`)
+        });
+        showAll();
     });
 
     document.getElementById('btnUpdate').addEventListener('click', e => {
@@ -109,23 +101,24 @@ function init() {
 
 function showAll(){
     fetch('http://localhost:8080/admin/users', {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        },
-    })
-        .then( res => res.json() )
-        .then( rows => {
-            const tbodyEl = document.querySelector('tbody');
-            rows.forEach(element => {
-                tbodyEl.innerHTML += `
-                <tr>
-                    <td id="${element.id}">${element.id}</th>
-                    <td>${element.firstName}</td>
-                    <td>${element.lastName}</td>
-                    <td>${element.role}</td>
-                    <td>${element.email}</td>
-                    <td>${element.quantityOfMoney}</td>
-                </tr>`;
-            });
+         headers: {
+             'Authorization': `Bearer ${token}`
+         },
+     })
+    .then( res => res.json() )
+    .then( rows => {
+        const tbodyEl = document.querySelector('tbody');
+        tbodyEl.innerHTML = '';
+        rows.forEach(element => {
+            tbodyEl.innerHTML += `
+            <tr>
+                <td id="${element.id}">${element.id}</th>
+                <td>${element.first_name}</td>
+                <td>${element.last_name}</td>
+                <td>${element.role}</td>
+                <td>${element.email}</td>
+                <td>${element.quantity_of_money}</td>
+            </tr>`;
         });
+    }).catch(console.log("Greska sa ipsisom tabele"));
 }

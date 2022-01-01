@@ -4,55 +4,51 @@ const products = require('./routes/products');
 const users = require('./routes/users');
 const categories = require('./routes/categories');
 const orders = require('./routes/orders');
+const app = express();
 const path = require('path');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const cors = require('cors');
+app.use(express.json());
+app.use(cors(corsOptions));
 
-
-const app = express();
 
 var corsOptions = {
     origin: "http://localhost:8000", // za app gui 8000
     optionsSuccessStatus: 200
 }
 
+// function getCookies(req) {
+//     if (req.headers.cookie == null) return {};
 
-app.use(cors(corsOptions));
-app.use(express.json());
+//     const rawCookies = req.headers.cookie.split('; ');
+//     const parsedCookies = {};
 
+//     rawCookies.forEach( rawCookie => {
+//         const parsedCookie = rawCookie.split('=');
+//         parsedCookies[parsedCookie[0]] = parsedCookie[1];
+//     });
 
+//     return parsedCookies;
+// };
 
-function getCookies(req) {
-    if (req.headers.cookie == null) return {};
-
-    const rawCookies = req.headers.cookie.split('; ');
-    const parsedCookies = {};
-
-    rawCookies.forEach( rawCookie => {
-        const parsedCookie = rawCookie.split('=');
-        parsedCookies[parsedCookie[0]] = parsedCookie[1];
-    });
-
-    return parsedCookies;
-};
-
-function authToken(req, res, next) {
-    const cookies = getCookies(req);
-    const token = cookies['token'];
+// function authToken(req, res, next) {
+//     const cookies = getCookies(req);
+//     const token = cookies['token'];
   
-    if (token == null) return res.redirect(301, 'http://localhost:8000/login');
+//     if (token == null) return res.send({msg : "token je null kaze app_rest"});
   
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+//     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
     
-        if (err) return res.redirect(301, 'http://localhost:8000/login');
+//         if (err)  return res.send({msg : "token nije dobar ali nije null, kaze app_rest"});
     
-        req.user = user;
+//         req.user = user;
     
-        next();
-    });
-}
+//         next();
+//     });
+// }
+// app.use(authToken);
 
 app.post('/register', (req, res) => {
 
@@ -73,10 +69,8 @@ app.post('/register', (req, res) => {
 
 });
 
-//app.use(authToken);
-
-app.use('/admin', products);
 app.use('/admin', users);
+app.use('/admin', products);
 app.use('/admin', categories);
 app.use('/admin', orders);
 

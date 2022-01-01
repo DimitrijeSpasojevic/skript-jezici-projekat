@@ -80,6 +80,7 @@ function showAll(){
     .then( rows => {
         const tbodyEl = document.querySelector('tbody');
         rows.forEach(element => {
+            tbodyEl.innerHTML = '';
             tbodyEl.innerHTML += `
             <tr>
                 <td id="${element.id}">${element.id}</th>
