@@ -25,6 +25,7 @@ function init() {
             .then( res => res.json() )
             .then( product => {
                 console.log(product);
+                showAll();
             })
             .catch( err => res.status(500).json(err) );
     });
@@ -52,6 +53,7 @@ function init() {
             .then( res => res.json() )
             .then( product => {
                 console.log(product);
+                showAll();
             })
             .catch( err => res.status(500).json(err) );
     });
@@ -72,6 +74,7 @@ function init() {
             .then( res => res.json() )
             .then( el => {
                 console.log(el)
+                showAll();
             });
         
     });

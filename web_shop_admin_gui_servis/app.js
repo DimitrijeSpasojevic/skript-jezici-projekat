@@ -3,16 +3,10 @@ const { sequelize } = require('../models');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const cors = require('cors');
 const app = express();
 app.use(express.json());
 
-var corsOptions = {
-    origin: "http://localhost:80", // za app gui 8000
-    optionsSuccessStatus: 200
-}
 
-app.use(cors(corsOptions));
 
 app.get('/login.html', (req, res) => {
     res.sendFile('login.html', { root: './static' });

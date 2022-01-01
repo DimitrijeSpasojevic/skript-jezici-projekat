@@ -9,30 +9,32 @@ route.use(express.json());
 route.use(express.urlencoded({ extended: true }));
 
 
-// function authTokenHeader(req, res, next) {
-//     const authHeader = req.headers['Authorization'];
-//     console.log(`ovo je authHeader${authHeader}`);
-//     const token = authHeader && authHeader.split(' ')[1];
-//     console.log(`ovo je Token${token}`);
-//     if (token == null) return res.status(401).json({ msg: "Korisnik nema token" });
-  
-//     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    
-//         if (err) return res.status(403).json({ msg: "Korisnikov token nije dobar" });
-    
-//         req.user = user;
-    
-//         next();
-//     });
-// }
-
-//route.use(authTokenHeader);
-
 route.get('/users', (req, res) => {
     Users.findAll()
         .then( rows => res.json(rows) )
         .catch( err => res.status(500).json(err) );
 });
+
+function authTokenHeader(req, res, next) {
+    const authHeader = req.headers['Authorization'];
+    console.log(`ovo je authHeader${authHeader}`);
+    const token = authHeader && authHeader.split(' ')[1];
+    console.log(`ovo je Token${token}`);
+    if (token == null) return res.status(401).json({ msg: "Korisnik nema token" });
+  
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    
+        if (err) return res.status(403).json({ msg: "Korisnikov token nije dobar" });
+    
+        req.user = user;
+    
+        next();
+    });
+}
+
+route.use(authTokenHeader);
+
+
 
 route.post('/users', (req, res) => {
 
