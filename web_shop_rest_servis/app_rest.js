@@ -11,13 +11,18 @@ require('dotenv').config();
 const bcrypt = require('bcrypt');
 const cors = require('cors');
 app.use(express.json());
-app.use(cors(corsOptions));
+
 
 
 var corsOptions = {
-    origin: "http://localhost:8000", // za app gui 8000
-    optionsSuccessStatus: 200
+  "origin": "*",
+  "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+  "preflightContinue": false,
+  "optionsSuccessStatus": 204
 }
+
+
+app.use(cors(corsOptions));
 
 // function getCookies(req) {
 //     if (req.headers.cookie == null) return {};

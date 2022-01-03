@@ -3,16 +3,16 @@ const { sequelize, Products,Users } = require('/skript jezici projekat/models');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const Joi = require('joi');
-const routep = express.Router();
-routep.use(express.json());
-routep.use(express.urlencoded({ extended: true }));
+const route_products = express.Router();
+route_products.use(express.json());
+route_products.use(express.urlencoded({ extended: true }));
 
 
 function authTokenHeader(req, res, next) {
-    const authHeader = req.headers['Authorization'];
-    console.log(`ovo je authHeader${authHeader}`);
+    const authHeader = req.headers['authorization'];
+   
     const token = authHeader && authHeader.split(' ')[1];
-    console.log(`ovo je Token${token}`);
+    
     if (token == null) return res.status(401).json({ msg: "Korisnik nema token iz product.jsa" });
   
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
@@ -25,36 +25,38 @@ function authTokenHeader(req, res, next) {
     });
 }
 
-routep.use(authTokenHeader);
+route_products.use(authTokenHeader);
 
 
-routep.get('/products', (req, res) => {
+route_products.get('/products', (req, res) => {
     Products.findAll()
         .then( rows => res.json(rows) )
         .catch( err => res.status(500).json(err) );
 });
 
-routep.post('/products', (req, res) => {
+route_products.post('/products', (req, res) => {
 
     const sema = Joi.object().keys({
-        name: Joi.string().require(),
+        name: Joi.string().required(),
         price: Joi.number().required(),
         description: Joi.string().max(120).required(),
-        category: Joi.string().require(),
-        rate: Joi.number().min(0).max(5).require()
+        category: Joi.number().required(),
+        rate: Joi.number().min(0).max(5).required()
     });
     
     Joi.validate(req.body, sema, (err, result) => {
         if (err)
             res.send(err.details[0].message);
         else {
+            
             const obj = {
                 name:req.body.name,
                 price:req.body.price,
                 description: req.body.description,
-                category: req.body.category,
+                categoryId: req.body.category,
                 rate: req.body.rate
             }
+            console.log(obj);
             Users.findOne({ where : { id: req.user.userId} })
             .then( usr => {
                 if(usr.role){
@@ -72,28 +74,30 @@ routep.post('/products', (req, res) => {
     
 });
 
-routep.put('/products', (req, res) => {
+route_products.put('/products', (req, res) => {
 
     const sema = Joi.object().keys({
-        name: Joi.string().require(),
+        name: Joi.string().required(),
         price: Joi.number().required(),
         description: Joi.string().max(120).required(),
-        category: Joi.string().require(),
-        rate: Joi.number().min(0).max(5).require()
+        category: Joi.number().required(),
+        rate: Joi.number().min(0).max(5).required()
     });
     
     Joi.validate(req.body, sema, (err, result) => {
-        if (err)
+        if (err){
+            console.log(req.body);
             res.send(err.details[0].message);
+        }
         else {
-            Products.findOne({ where : { id: req.body.id} })
-            .then( Product => {
-                Product.name = req.body.name
-                Product.price = req.body.price
-                Product.description = req.body.description
-                Product.category = req.body.category
-                Product.rate = req.body.rate
-                Product.save()
+            Products.findOne({ where : { name: req.body.name} })
+            .then( product => {
+                product.name = req.body.name
+                product.price = req.body.price
+                product.description = req.body.description
+                product.categoryId = req.body.category
+                product.rate = req.body.rate
+                product.save()
                 .then( rows => res.json(rows) )
                 .catch( err => res.status(500).json(err) );
             })
@@ -105,16 +109,17 @@ routep.put('/products', (req, res) => {
 
 });
 
-routep.delete('/products', (req, res) => {
+route_products.delete('/products', (req, res) => {
 
     const sema = Joi.object().keys({
-        id: Joi.number().require()
+        id: Joi.number().required()
     });
     
     Joi.validate(req.body, sema, (err, result) => {
         if (err)
             res.send(err.details[0].message);
         else{
+            console.log(req.body.id)
             Products.findOne({ where: { id: req.body.id } })
             .then( product => {
                 product.destroy()
@@ -128,4 +133,4 @@ routep.delete('/products', (req, res) => {
  
 });
 
-module.exports = routep;
+module.exports = route_products;

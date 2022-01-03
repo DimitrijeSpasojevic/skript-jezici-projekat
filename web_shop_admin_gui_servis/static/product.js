@@ -1,8 +1,9 @@
+
+const cookies = document.cookie.split('=');
+const token = cookies[cookies.length - 1];
+
 function init() {
-
-    const cookies = document.cookie.split('=');
-    const token = cookies[cookies.length - 1];
-
+    showAll();
     document.getElementById('btnCreate').addEventListener('click', e => {
         e.preventDefault();
 
@@ -27,7 +28,7 @@ function init() {
                 console.log(product);
                 showAll();
             })
-            .catch( err => res.status(500).json(err) );
+            .catch( err => console.log("neuspela promena") );
     });
 
     document.getElementById('btnUpdate').addEventListener('click', e => {
@@ -39,7 +40,6 @@ function init() {
             description: document.getElementById('description').value,
             category: document.getElementById('category').value,
             rate: document.getElementById('rate').value,
-            id: document.getElementById('del').value
         };
 
         fetch('http://localhost:8080/admin/products', {
@@ -55,13 +55,14 @@ function init() {
                 console.log(product);
                 showAll();
             })
-            .catch( err => res.status(500).json(err) );
+            .catch( err => console.log(err));
     });
 
     document.getElementById('btnDelete').addEventListener('click', e => {
         e.preventDefault();
-
-        id = document.getElementById('del').value;
+        const data = {
+            id: document.getElementById('del').value
+        }
         
         fetch('http://localhost:8080/admin/products', {
             method: 'DELETE',
@@ -69,11 +70,11 @@ function init() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(id)
+            body: JSON.stringify(data)
         })
             .then( res => res.json() )
             .then( el => {
-                console.log(el)
+                console.log(data)
                 showAll();
             });
         
@@ -81,7 +82,7 @@ function init() {
 }
 
 function showAll(){
-    fetch('http://localhost:8080/admin/orders', {
+    fetch('http://localhost:8080/admin/products', {
         headers: {
             'Authorization': `Bearer ${token}`
         },
@@ -89,6 +90,7 @@ function showAll(){
     .then( res => res.json() )
     .then( rows => {
         const tbodyEl = document.querySelector('tbody');
+        tbodyEl.innerHTML = '';
         rows.forEach(element => {
             tbodyEl.innerHTML += `
             <tr>
@@ -96,7 +98,7 @@ function showAll(){
                 <td>${element.name}</td>
                 <td>${element.description}</td>
                 <td>${element.price}</td>
-                <td>${element.category}</td>
+                <td>${element.categoryId}</td>
                 <td>${element.rate}</td>
             </tr>`;
 

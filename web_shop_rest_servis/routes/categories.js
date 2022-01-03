@@ -3,17 +3,17 @@ const { sequelize, Categories } = require('/skript jezici projekat/models');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const Joi = require('joi');
-const route = express.Router();
-route.use(express.json());
-route.use(express.urlencoded({ extended: true }));
+const route_categories = express.Router();
+route_categories.use(express.json());
+route_categories.use(express.urlencoded({ extended: true }));
 
 
 
 function authTokenHeader(req, res, next) {
-    const authHeader = req.headers['Authorization'];
-    console.log(`ovo je authHeader${authHeader}`);
+    const authHeader = req.headers['authorization'];
+    
     const token = authHeader && authHeader.split(' ')[1];
-    console.log(`ovo je Token${token}`);
+    
     if (token == null) return res.status(401).json({ msg: "Korisnik nema token iz product.jsa" });
   
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
@@ -26,18 +26,18 @@ function authTokenHeader(req, res, next) {
     });
 }
 
-route.use(authTokenHeader);
+route_categories.use(authTokenHeader);
 
-route.get('/categories', (req, res) => {
+route_categories.get('/categories', (req, res) => {
     Categories.findAll()
         .then( rows => res.json(rows) )
         .catch( err => res.status(500).json(err) );
 });
 
-route.post('/categories', (req, res) => {
+route_categories.post('/categories', (req, res) => {
     
     const sema = Joi.object().keys({
-        name: Joi.string().require(),
+        name: Joi.string(),
         popularity: Joi.number().required(),
         description: Joi.string().max(120).required()
     });
@@ -61,10 +61,10 @@ route.post('/categories', (req, res) => {
 });
 
 
-route.put('/categories', (req, res) => {
+route_categories.put('/categories', (req, res) => {
     
     const sema = Joi.object().keys({
-        name: Joi.string().require(),
+        name: Joi.string().required(),
         popularity: Joi.number().required(),
         description: Joi.string().max(120).required()
     });
@@ -89,10 +89,10 @@ route.put('/categories', (req, res) => {
 
 });
 
-route.delete('/categories', (req, res) => {
+route_categories.delete('/categories', (req, res) => {
     
     const sema = Joi.object().keys({
-        id: Joi.number().require(),
+        id: Joi.number().required(),
     });
 
     Joi.validate(req.body, sema, (err, result) => {
@@ -113,4 +113,4 @@ route.delete('/categories', (req, res) => {
         
 });
 
-module.exports = route;
+module.exports = route_categories;

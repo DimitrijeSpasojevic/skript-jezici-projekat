@@ -4,11 +4,17 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const app = express();
+const cors = require('cors');
 app.use(express.json());
+app.use(cors(corsOptions));
 
 
+var corsOptions = {
+    origin: "*", 
+    optionsSuccessStatus: 200
+}
 
-app.get('/login.html', (req, res) => {
+app.get('/login', (req, res) => {
     res.sendFile('login.html', { root: './static' });
 });
 

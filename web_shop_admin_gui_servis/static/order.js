@@ -1,19 +1,17 @@
+const cookies = document.cookie.split('=');
+const token = cookies[cookies.length - 1];
 function init() {
-
-    const cookies = document.cookie.split('=');
-    const token = cookies[cookies.length - 1];
-
+    showAll();
     document.getElementById('btnCreate').addEventListener('click', e => {
         e.preventDefault();
 
         const data = {
-            usrID: document.getElementById('name').value,
+            userId: document.getElementById('name').value,
             current_value: document.getElementById('price').value,
             discount: document.getElementById('sale').value,
             type_of_delivery: document.getElementById('nacin').value,
-            urgent: document.getElementById('urgent').value
+            urgent: document.getElementById('urgent').checked
         };
-
         fetch('http://localhost:8080/admin/orders', {
             method: 'POST',
             headers: {
@@ -33,12 +31,12 @@ function init() {
         e.preventDefault();
 
         const data = {
-            usrID: document.getElementById('name').value,
+            userId: document.getElementById('name').value,
             current_value: document.getElementById('price').value,
             discount: document.getElementById('sale').value,
             type_of_delivery: document.getElementById('nacin').value,
-            urgent: document.getElementById('urgent').value,
-            id: document.getElementById('del').value
+            urgent: document.getElementById('urgent').checked,
+            updateId: document.getElementById('upd').value
         };
 
         fetch('http://localhost:8080/admin/orders', {
@@ -59,7 +57,10 @@ function init() {
     document.getElementById('btnDelete').addEventListener('click', e => {
         e.preventDefault();
 
-        id = document.getElementById('del').value;
+        const data = {
+            id: document.getElementById('del').value
+        }
+        
         
         fetch('http://localhost:8080/admin/orders', {
             method: 'DELETE',
@@ -67,7 +68,7 @@ function init() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(id)
+            body: JSON.stringify(data)
         })
             .then( res => res.json() )
             .then( el => {
@@ -88,13 +89,13 @@ function showAll(){
     .then( res => res.json() )
     .then( rows => {
         const tbodyEl = document.querySelector('tbody');
+        tbodyEl.innerHTML = '';
         rows.forEach(element => {
-            tbodyEl.innerHTML = '';
             tbodyEl.innerHTML += `
             <tr>
                 <td id="${element.id}">${element.id}</th>
                 <td>${element.current_value}</td>
-                <td>${element.usrID}</td>
+                <td>${element.userId}</td>
                 <td>${element.discount}</td>
                 <td>${element.type_of_delivery}</td>
                 <td>${element.urgent}</td>

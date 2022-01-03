@@ -3,23 +3,25 @@ const { sequelize, Users } = require('/skript jezici projekat/models');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const Joi = require('joi');
-const route = express.Router();
+const route_users = express.Router();
 const bcrypt = require('bcrypt');
-route.use(express.json());
-route.use(express.urlencoded({ extended: true }));
+route_users.use(express.json());
+route_users.use(express.urlencoded({ extended: true }));
 
 
-route.get('/users', (req, res) => {
+route_users.get('/users', (req, res) => {
+
     Users.findAll()
         .then( rows => res.json(rows) )
         .catch( err => res.status(500).json(err) );
 });
 
 function authTokenHeader(req, res, next) {
-    const authHeader = req.headers['Authorization'];
-    console.log(`ovo je authHeader${authHeader}`);
+   
+    const authHeader = req.headers['authorization'];
+   
     const token = authHeader && authHeader.split(' ')[1];
-    console.log(`ovo je Token${token}`);
+   
     if (token == null) return res.status(401).json({ msg: "Korisnik nema token" });
   
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
@@ -32,17 +34,18 @@ function authTokenHeader(req, res, next) {
     });
 }
 
-route.use(authTokenHeader);
+route_users.use(authTokenHeader);
 
 
 
-route.post('/users', (req, res) => {
+route_users.post('/users', (req, res) => {
 
     const sema = Joi.object().keys({
-        firstName: Joi.string().require(),
+        firstName: Joi.string().required(),
         lastName: Joi.string().required(),
         email: Joi.string().trim().email().required(),
-        quantityOfMoney: Joi.number().require(),
+        role: Joi.boolean(),
+        quantityOfMoney: Joi.number().required(),
         password: Joi.string().min(4).max(12).required()
     });
     
@@ -66,13 +69,14 @@ route.post('/users', (req, res) => {
 
 });
 
-route.put('/users', (req, res) => {
+route_users.put('/users', (req, res) => {
 
     const sema = Joi.object().keys({
-        firstName: Joi.string().require(),
+        firstName: Joi.string().required(),
         lastName: Joi.string().required(),
         email: Joi.string().trim().email().required(),
-        quantityOfMoney: Joi.number().require(),
+        role: Joi.boolean(),
+        quantityOfMoney: Joi.number().required(),
         password: Joi.string().min(4).max(12).required()
     });
     
@@ -80,8 +84,10 @@ route.put('/users', (req, res) => {
         if (err)
             res.send(err.details[0].message);
         else{
-            Users.findOne({ where : { email: req.user.email} })
+            console.log(req.user);
+            Users.findOne({ where : { id: req.user.userId} })
              .then( usr => {
+                 console.log(user.role);
                 if(usr.role){
                     Users.findOne({ where : { email: req.body.email} })
                     .then(userToUpdate => {
@@ -93,19 +99,19 @@ route.put('/users', (req, res) => {
                         userToUpdate.password = bcrypt.hashSync(req.body.password, 10)
                         userToUpdate.save()
                         .then( rows => res.json(rows) )
-                        .catch( err => res.status(500).json(err) );
+                        .catch( err => res.status(500).json({msg: `Korisnik sa emailom ${req.body.email} ne moze da se promeni`}) );
                     })
-                    .catch( err => res.status(500).json(err) );     
+                    .catch( err => res.status(500).json({msg: `Korisnik sa emailom ${req.body.email} ne mozfdssdfeni`}));     
                 }else{
                      res.status(403).json({msg: `Korisnik ${usr.first_name} nije autorizavan za operaciju`})
                 }
                 })
-            .catch( err => res.status(500).json(err) )
+            .catch( err => res.status(500).json({msg: `Korisnik sa id  ${req.user.userId} ne moze da se nadje u bazi`}) )
         }
     });
 });
 
-route.delete('/users', (req, res) => {
+route_users.delete('/users', (req, res) => {
 
     const sema = Joi.object().keys({
         email: Joi.string().trim().email().required()
@@ -113,25 +119,26 @@ route.delete('/users', (req, res) => {
     
     Joi.validate(req.body, sema, (err, result) => {
         if (err)
-            res.send(err.details[0].message);
+        res.status(403).json({msg: `Greska za joi u validate delete Useres`})
         else{
-            Users.findOne({ where : { email: req.user.email} })
+            
+            Users.findOne({ where : { id: req.user.userId} })
             .then( usr => {
                 if(usr.role){
                     Users.findOne({ where: { email: req.body.email }} )
                         .then( usr => {
                             usr.destroy()
                                 .then( rows => res.json(rows) )
-                                .catch( err => res.status(500).json(err) );
+                                .catch( err => console.log("neuspelo brisanje usera sa destroy") );
                         })
-                        .catch( err => res.status(500).json(err) );
+                        .catch( err => res.status(500).json({msg: `Nije pronadjenj user koji zeli da brise`}) );
                 }else{
                     res.status(403).json({msg: `Korisnik ${usr.first_name} nije autorizavan za operaciju`})
                 }
             })
-            .catch( err => res.status(500).json(err) )            
+            .catch( err => console.log("Nije nadjen usr koji zeli da brise") );         
         }
     });
 });
 
-module.exports = route;
+module.exports = route_users;
