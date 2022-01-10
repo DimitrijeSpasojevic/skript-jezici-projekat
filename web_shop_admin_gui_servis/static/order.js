@@ -12,19 +12,21 @@ function init() {
             type_of_delivery: document.getElementById('nacin').value,
             urgent: document.getElementById('urgent').checked
         };
-        fetch('http://localhost:8080/admin/orders', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(data)
-        })
-            .then( res => res.json() )
-            .then( el => {
-                console.log(el)
-                showAll();
-            });
+        if(validate(data)){
+            fetch('http://localhost:8080/admin/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(data)
+            })
+                .then( res => res.json() )
+                .then( el => {
+                    console.log(el)
+                    showAll();
+                });
+            }
     });
 
     document.getElementById('btnUpdate').addEventListener('click', e => {
@@ -38,7 +40,7 @@ function init() {
             urgent: document.getElementById('urgent').checked,
             updateId: document.getElementById('upd').value
         };
-
+        if(validate(data)){
         fetch('http://localhost:8080/admin/orders', {
             method: 'PUT',
             headers: {
@@ -52,6 +54,7 @@ function init() {
                 console.log(el)
                 showAll();
             });
+        }
     });
 
     document.getElementById('btnDelete').addEventListener('click', e => {
@@ -102,4 +105,27 @@ function showAll(){
             </tr>`;
         });
     });
+}
+
+
+function validate(data){
+    if(!(/^[a-zA-Z]{2,150}$/.test(data.type_of_delivery))){
+        alert('Invalid type_of_delivery format');
+        return false;
+    }
+    const reg = new RegExp('^[0-9]+$');
+    if(!(reg.test(data.current_value))){
+        alert('Invalid current_value format');
+        return false;
+    }
+    if(!(reg.test(data.discount))){
+        alert('Invalid discount format');
+        return false;
+    }
+    if(!(reg.test(data.userId))){
+        alert('Invalid userId format');
+        return false;
+    }
+
+    return true;
 }

@@ -43,19 +43,20 @@ function init() {
             quantityOfMoney: document.getElementById('quantity').value,
             password: document.getElementById('password').value
         };
-
-        fetch('http://localhost:8080/admin/users', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(data)
-        })
-        .then( res => res.json() )
-        .then( el => {
-            window.alert(`Kreiran korisnik ${el.first_name}`)
-        });
+        if(validate(data)){
+            fetch('http://localhost:8080/admin/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(data)
+            })
+            .then( res => res.json() )
+            .then( el => {
+                window.alert(`Kreiran korisnik ${el.first_name}`)
+            });
+        }
         showAll();
     });
 
@@ -69,19 +70,20 @@ function init() {
             quantityOfMoney: document.getElementById('quantity').value,
             password: document.getElementById('password').value
         };
-
-        fetch('http://localhost:8080/admin/users', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(data)
-        })
-            .then( res => res.json() )
-            .then( el => {
-                console.log(el)
-            });
+        if(validate(data)){
+            fetch('http://localhost:8080/admin/users', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(data)
+            })
+                .then( res => res.json() )
+                .then( el => {
+                    console.log(el)
+                });
+        }
     });
 
     document.getElementById('btnDelete').addEventListener('click', e => {
@@ -128,4 +130,13 @@ function showAll(){
             </tr>`;
         });
     }).catch(console.log("Greska sa ipsisom tabele"));
+}
+
+function validate(data){
+    var re = /\S+@\S+\.\S+/;
+    if(!re.test(data.email)){
+        alert('Invalid email format');
+        return false;
+    }
+    return true;
 }

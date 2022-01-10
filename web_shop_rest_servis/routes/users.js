@@ -9,12 +9,7 @@ route_users.use(express.json());
 route_users.use(express.urlencoded({ extended: true }));
 
 
-route_users.get('/users', (req, res) => {
 
-    Users.findAll()
-        .then( rows => res.json(rows) )
-        .catch( err => res.status(500).json(err) );
-});
 
 function authTokenHeader(req, res, next) {
    
@@ -36,6 +31,12 @@ function authTokenHeader(req, res, next) {
 
 route_users.use(authTokenHeader);
 
+route_users.get('/users', (req, res) => {
+
+    Users.findAll()
+        .then( rows => res.json(rows) )
+        .catch( err => res.status(500).json(err) );
+});
 
 
 route_users.post('/users', (req, res) => {
@@ -86,9 +87,9 @@ route_users.put('/users', (req, res) => {
         else{
             console.log(req.user);
             Users.findOne({ where : { id: req.user.userId} })
-             .then( usr => {
-                 console.log(user.role);
-                if(usr.role){
+            .then( usr => {
+                 console.log(usr.role);
+                if(usr.role == 1){
                     Users.findOne({ where : { email: req.body.email} })
                     .then(userToUpdate => {
                         userToUpdate.first_name = req.body.firstName
@@ -105,8 +106,8 @@ route_users.put('/users', (req, res) => {
                 }else{
                      res.status(403).json({msg: `Korisnik ${usr.first_name} nije autorizavan za operaciju`})
                 }
-                })
-            .catch( err => res.status(500).json({msg: `Korisnik sa id  ${req.user.userId} ne moze da se nadje u bazi`}) )
+            })
+            .catch( err => res.status(500).json({msg: `Korisnik sa id  ${req.user.userId} ${err}ne moze da se nadje u bazi`}) )
         }
     });
 });
@@ -124,7 +125,8 @@ route_users.delete('/users', (req, res) => {
             
             Users.findOne({ where : { id: req.user.userId} })
             .then( usr => {
-                if(usr.role){
+                console.log(usr.role);
+                if(usr.role == 1){
                     Users.findOne({ where: { email: req.body.email }} )
                         .then( usr => {
                             usr.destroy()

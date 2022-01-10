@@ -24,37 +24,6 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 
-// function getCookies(req) {
-//     if (req.headers.cookie == null) return {};
-
-//     const rawCookies = req.headers.cookie.split('; ');
-//     const parsedCookies = {};
-
-//     rawCookies.forEach( rawCookie => {
-//         const parsedCookie = rawCookie.split('=');
-//         parsedCookies[parsedCookie[0]] = parsedCookie[1];
-//     });
-
-//     return parsedCookies;
-// };
-
-// function authToken(req, res, next) {
-//     const cookies = getCookies(req);
-//     const token = cookies['token'];
-  
-//     if (token == null) return res.send({msg : "token je null kaze app_rest"});
-  
-//     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    
-//         if (err)  return res.send({msg : "token nije dobar ali nije null, kaze app_rest"});
-    
-//         req.user = user;
-    
-//         next();
-//     });
-// }
-// app.use(authToken);
-
 app.post('/register', (req, res) => {
 
     const obj = {
@@ -73,6 +42,8 @@ app.post('/register', (req, res) => {
                       console.log(err)});
 
 });
+
+
 
 app.use('/admin', users);
 app.use('/admin', products);

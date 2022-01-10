@@ -10,20 +10,21 @@ function init() {
             popularity: document.getElementById('popularity').value,
             description: document.getElementById('description').value,
         };
-
-        fetch('http://localhost:8080/admin/categories', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(data)
-        })
-            .then( res => res.json() )
-            .then( el => {
-                console.log(el)
-                showAll();
-            });
+        if(validate(data)){
+            fetch('http://localhost:8080/admin/categories', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(data)
+            })
+                .then( res => res.json() )
+                .then( el => {
+                    console.log(el)
+                    showAll();
+                });
+        }
     });
 
     document.getElementById('btnUpdate').addEventListener('click', e => {
@@ -34,20 +35,21 @@ function init() {
             popularity: document.getElementById('popularity').value,
             description: document.getElementById('description').value,
         };
-
-        fetch('http://localhost:8080/admin/categories', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(data)
-        })
-            .then( res => res.json() )
-            .then( el => {
-                console.log(el)
-                showAll();
-            });
+        if(validate(data)){
+            fetch('http://localhost:8080/admin/categories', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(data)
+            })
+                .then( res => res.json() )
+                .then( el => {
+                    console.log(el)
+                    showAll();
+                });
+        }
     });
 
     document.getElementById('btnDelete').addEventListener('click', e => {
@@ -96,4 +98,13 @@ function showAll(){
             </tr>`;
         });
     });
+}
+
+function validate(data){
+    if(data.name.length < 1 || data.name.length > 30){
+        alert('Invalid name format');
+        return false;
+    }
+
+    return true;
 }

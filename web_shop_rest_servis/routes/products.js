@@ -59,7 +59,7 @@ route_products.post('/products', (req, res) => {
             console.log(obj);
             Users.findOne({ where : { id: req.user.userId} })
             .then( usr => {
-                if(usr.role){
+                if(usr.role == 1){
                     Products.create(obj)
                         .then( row => res.json(row) )
                         .catch( err => res.status(500).json(err) ); 
