@@ -1,9 +1,24 @@
 const express = require('express');
-const { sequelize } = require('../models');
+const { sequelize, Messages} = require('../models');
 const path = require('path');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const http = require('http');
+const { Server } = require("socket.io");
+// const history = require('connect-history-api-fallback');
 require('dotenv').config();
+
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: "http://localhost:3000",
+        methods: ['GET', 'POST'],
+        credentials: true
+    },
+    allowEIO3: true
+});
+
 const cors = require('cors');
 app.use(express.json());
 app.use(cors(corsOptions));
@@ -18,61 +33,39 @@ app.get('/login', (req, res) => {
     res.sendFile('login.html', { root: './static' });
 });
 
-function getCookies(req) {
-    if (req.headers.cookie == null) return {};
-
-    const rawCookies = req.headers.cookie.split('; ');
-    const parsedCookies = {};
-
-    rawCookies.forEach( rawCookie => {
-        const parsedCookie = rawCookie.split('=');
-        parsedCookies[parsedCookie[0]] = parsedCookie[1];
-    });
-
-    return parsedCookies;
-};
-
-function authToken(req, res, next) {
-    const cookies = getCookies(req);
-    const token = cookies['token'];
-  
-    if (token == null) return res.send({msg : "token je null kaze app_gui"});
-  
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    
-        if (err)  return res.send({msg : "token nije dobar ali nije null, kaze app_gui"});
-    
-        req.user = user;
-    
-        next();
-    });
-}
-
-/*app.get('/register', (req, res) => {
-    res.sendFile('register.html', { root: './static' });
-});
-
-
-
-app.get('/category',authToken, (req, res) => {
-    res.sendFile('category.html', { root: './static' });
-});
-
-app.get('/order',authToken, (req, res) => {
-    res.sendFile('order.html', { root: './static' });
-});
-
-app.get('/product',authToken, (req, res) => {
-    res.sendFile('product.html', { root: './static' });
-});
-
-app.get('/user',authToken, (req, res) => {
-    res.sendFile('user.html', { root: './static' });
-});
-*/
 app.use(express.static(path.join(__dirname, 'static')));
 
-app.listen({ port: 8000 }, async () => {
+function authSocket(msg, next) {
+    
+    if (msg[1].token == null) {
+        next(new Error("Not authenticated"));
+    } else {
+        jwt.verify(msg[1].token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+            if (err) {
+                next(new Error(err));
+            } else {
+                msg[1].user = user;
+                next();
+            }
+        });
+    }
+}
+
+io.on('connection', socket => {
+    socket.use(authSocket);
+ 
+    socket.on('comment', msg => {
+        Messages.create({ body: msg.body, userId: msg.user.userId })
+            .then( rows => {
+                Messages.findOne({ where: { id: rows.id }, include: ['user'] })
+                    .then( msg => io.emit('comment', JSON.stringify(msg)) ) 
+            }).catch( err => socket.emit('error', err.message) );
+    });
+
+    socket.on('error', err => socket.emit('error', err.message) );
+});
+
+server.listen({ port: 8000 }, async () => {
     await sequelize.authenticate();
     console.log("pokrenuta na portu 8000 gui servis")
 });

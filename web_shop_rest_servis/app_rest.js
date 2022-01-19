@@ -1,5 +1,5 @@
 const express = require('express');
-const { sequelize, Users, Categories, Products} = require('/skript jezici projekat/models');
+const { sequelize, Users, Categories, Products, Messages} = require('/skript jezici projekat/models');
 const products = require('./routes/products');
 const users = require('./routes/users');
 const categories = require('./routes/categories');
@@ -56,6 +56,24 @@ app.get('/categories/:id', (req, res) => {
 
 app.get('/products/category/:id', (req, res) => {
     Products.findAll({ where : { categoryId: req.params.id} })
+        .then( rows => res.json(rows) )
+        .catch( err => res.status(500).json(err) );
+});
+
+app.get('/comments', (req, res) => {
+    Messages.findAll({ include: ['user'] })
+        .then( rows => res.json(rows) )
+        .catch( err => res.status(500).json(err) );
+});
+
+app.post('/comments', (req, res) => {
+    
+    const data = {
+        body:"primer neke poruke",
+        userId: 1
+    }
+
+    Messages.create(data)
         .then( rows => res.json(rows) )
         .catch( err => res.status(500).json(err) );
 });

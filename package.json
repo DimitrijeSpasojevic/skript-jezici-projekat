@@ -10,7 +10,8 @@
     "nodemon": "^2.0.15",
     "pg": "^8.7.1",
     "postgres": "^1.0.2",
-    "sequelize": "^6.9.0"
+    "sequelize": "^6.9.0",
+    "socket.io": "^4.4.0"
   },
   "name": "skript-jezici-projekat",
   "version": "1.0.0",
