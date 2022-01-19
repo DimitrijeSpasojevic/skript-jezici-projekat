@@ -86,7 +86,6 @@ route_products.put('/products', (req, res) => {
     
     Joi.validate(req.body, sema, (err, result) => {
         if (err){
-            console.log(req.body);
             res.send(err.details[0].message);
         }
         else {
@@ -119,7 +118,7 @@ route_products.delete('/products', (req, res) => {
         if (err)
             res.send(err.details[0].message);
         else{
-            console.log(req.body.id)
+        
             Products.findOne({ where: { id: req.body.id } })
             .then( product => {
                 product.destroy()

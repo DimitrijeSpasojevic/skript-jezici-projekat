@@ -1,5 +1,5 @@
 const express = require('express');
-const { sequelize, Categories } = require('/skript jezici projekat/models');
+const { sequelize, Categories, Products } = require('/skript jezici projekat/models');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const Joi = require('joi');
@@ -7,6 +7,12 @@ const route_categories = express.Router();
 route_categories.use(express.json());
 route_categories.use(express.urlencoded({ extended: true }));
 
+
+route_categories.get('/categories', (req, res) => {
+    Categories.findAll({ include: categoryId })
+        .then( rows => res.json(rows) )
+        .catch( err => res.status(500).json(err) );
+});
 
 
 function authTokenHeader(req, res, next) {
@@ -26,13 +32,8 @@ function authTokenHeader(req, res, next) {
     });
 }
 
-route_categories.use(authTokenHeader);
 
-route_categories.get('/categories', (req, res) => {
-    Categories.findAll()
-        .then( rows => res.json(rows) )
-        .catch( err => res.status(500).json(err) );
-});
+route_categories.use(authTokenHeader);
 
 route_categories.post('/categories', (req, res) => {
     

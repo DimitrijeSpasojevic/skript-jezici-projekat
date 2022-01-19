@@ -1,5 +1,5 @@
 const express = require('express');
-const { sequelize, Users} = require('/skript jezici projekat/models');
+const { sequelize, Users, Categories, Products} = require('/skript jezici projekat/models');
 const products = require('./routes/products');
 const users = require('./routes/users');
 const categories = require('./routes/categories');
@@ -42,7 +42,23 @@ app.post('/register', (req, res) => {
                       console.log(err)});
 
 });
+app.get('/categories', (req, res) => {
+    Categories.findAll()
+        .then( rows => res.json(rows) )
+        .catch( err => res.status(500).json(err) );
+});
 
+app.get('/categories/:id', (req, res) => {
+    Categories.findOne({ where: { id: req.params.id } })
+        .then( rows => res.json(rows) )
+        .catch( err => res.status(500).json(err) );
+});
+
+app.get('/products/category/:id', (req, res) => {
+    Products.findAll({ where : { categoryId: req.params.id} })
+        .then( rows => res.json(rows) )
+        .catch( err => res.status(500).json(err) );
+});
 
 
 app.use('/admin', users);

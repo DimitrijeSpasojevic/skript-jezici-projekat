@@ -10,7 +10,7 @@ function init() {
             name: document.getElementById('name').value,
             email: document.getElementById('email').value,
             password: document.getElementById('password').value,
-            role: document.getElementById('admin').checked
+            role: document.getElementById('admin').value
         };
         if(validate(data)){
             fetch('http://localhost:8080/register', {

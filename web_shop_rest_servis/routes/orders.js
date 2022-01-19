@@ -1,5 +1,5 @@
 const express = require('express');
-const { sequelize, Orders,Users } = require('/skript jezici projekat/models');
+const { sequelize, Orders,Users,Products } = require('/skript jezici projekat/models');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const Joi = require('joi');
@@ -31,6 +31,22 @@ route_orders.get('/orders', (req, res) => {
     Orders.findAll()
         .then( rows => res.json(rows) )
         .catch( err => res.status(500).json(err) );
+});
+
+
+route_orders.post('/create/order', (req, res) => {
+
+    const obj = {
+        userId: req.user.userId,
+        current_value:req.body.price,
+        discount: "0",
+        type_of_delivery: "kolima",
+        urgent: false
+    }
+   
+    Orders.create(obj)
+        .then( row => res.json(row) )
+        .catch( err => res.status(500).json(err) ); 
 });
 
 route_orders.post('/orders', (req, res) => {

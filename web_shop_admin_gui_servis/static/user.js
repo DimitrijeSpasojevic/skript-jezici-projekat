@@ -109,6 +109,7 @@ function init() {
 }
 
 function showAll(){
+    console.log(document.cookie);
     fetch('http://localhost:8080/admin/users', {
          headers: {
              'Authorization': `Bearer ${token}`
