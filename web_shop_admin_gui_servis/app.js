@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const http = require('http');
 const { Server } = require("socket.io");
-// const history = require('connect-history-api-fallback');
+const history = require('connect-history-api-fallback');
 require('dotenv').config();
 
 const app = express();
@@ -64,6 +64,14 @@ io.on('connection', socket => {
 
     socket.on('error', err => socket.emit('error', err.message) );
 });
+
+const staticMdl = express.static(path.join(__dirname, 'dist'));
+
+app.use(staticMdl);
+
+app.use(history({ index: '/index.html' }));
+
+app.use(staticMdl);
 
 server.listen({ port: 8000 }, async () => {
     await sequelize.authenticate();
